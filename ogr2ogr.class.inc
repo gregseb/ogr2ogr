@@ -22,7 +22,7 @@ class Ogr2ogr {
       if ($this->uri) {
         $result = array();
 
-        $command = $this->ogr2ogr .' -f CSV /vsistdout/ '. $this->uri;
+        $command = $this->ogr2ogr .' -f CSV /vsistdout/ "'. $this->uri .'"';
         foreach ($args as $flag => $value) {
           $command .= ' '. $flag .' '. $value;
         }
@@ -48,7 +48,7 @@ class Ogr2ogr {
         else {
           throw new Exception('ogr2ogr could not execute');
         }
-        
+
         return $result;
       }
     }

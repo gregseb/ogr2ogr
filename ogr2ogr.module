@@ -16,16 +16,16 @@ function ogr2ogr_requirements($phase) {
   if ($ogr2ogr_path = exec('which ogr2ogr')) {
     // TODO: Really should check that GDAL version >= 1.8
     // TODO: Also should create an admin settings form so user can set ogr2ogr path to something custom
-    $requirements['shapefile_ogr2ogr'] = array(
+    $requirements['ogr2ogr'] = array(
       'title' => $t('ogr2ogr commmand found'),
       'value' => $t('ogr2ogr library installed at %path', array('%path' => $ogr2ogr_path)),
       'severity' => REQUIREMENT_OK,
     );
   }
   else {
-    $requirements['shapefile_ogr2ogr'] = array(
+    $requirements['ogr2ogr'] = array(
       'title' => $t('ogr2ogr not found in path'),
-      'value' => $t('ogr2ogr library was not found. This will prevent shapefile module from processing shapefiles.'),
+      'value' => $t('ogr2ogr library was not found. This will prevent modules from making calls to ogr2ogr.'),
       'severity' => REQUIREMENT_ERROR,
     );
   }

@@ -22,17 +22,23 @@ class Ogr2ogr {
       if ($this->uri) {
         $result = array();
 
-        $command = $this->ogr2ogr .' -f CSV /vsistdout/ "'. $this->uri .'"';
+        // Prepare a tempdir
+        $tmpdir = tempnam(sys_get_temp_dir(), 'mapshape');
+        unlink($tmpdir);
+        mkdir($tmpdir);
+
+        $command = $this->ogr2ogr .' -f CSV -nln shape ' . $tmpdir . '/ogr2ogr '. $this->uri .'';
         foreach ($args as $flag => $value) {
           $command .= ' '. $flag .' '. $value;
         }
 
         // Can also seek to arbitrary features quite easily, for example:
         //   ogr2ogr -f CSV /vsistdout/ Existing_Developments_WGS84.shp  -lco GEOMETRY=AS_WKT -where 'fid in (1,2,3,4,5)'
+        system(escapeshellcmd($command));
 
         // Grab CSV formatted WKT data
         // TODO: Set up a try/catch block here
-        if (($handle = popen($command, "r")) !== FALSE) {
+        if (($handle = fopen($tmpdir . '/ogr2ogr/shape.csv', "r")) !== FALSE) {
           $header = array();
           while (($data = fgetcsv($handle)) !== FALSE) {
             // Hold onto the header so we can map to fields.
@@ -44,6 +50,9 @@ class Ogr2ogr {
             }
           }
           fclose($handle);
+
+          @unlink($tmpdir . '/shape.csv');
+          @unlink($tmpdir);
         }
         else {
           throw new Exception('ogr2ogr could not execute');
